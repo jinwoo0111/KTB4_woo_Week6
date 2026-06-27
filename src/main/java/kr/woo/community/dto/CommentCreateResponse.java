@@ -1,0 +1,14 @@
+package kr.woo.community.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.AllArgsConstructor;
+
+// 댓글 입력(생성) 응답 DTO
+@Getter
+@AllArgsConstructor
+public class CommentCreateResponse {
+
+    @JsonProperty("comment_id")
+    private Long commentId;
+}

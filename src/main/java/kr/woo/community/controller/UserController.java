@@ -1,0 +1,92 @@
+package kr.woo.community.controller;
+
+import jakarta.validation.Valid;
+import kr.woo.community.common.ApiResponse;
+import kr.woo.community.dto.*;
+import kr.woo.community.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequiredArgsConstructor
+public class UserController {
+    private final UserService userService;
+
+    // POST /users/signup - 회원가입
+    @PostMapping("/users/signup")
+    public ResponseEntity<ApiResponse<UserSignupResponse>> signup(
+            @Valid @RequestBody UserSignupRequest request
+    ) {
+        UserSignupResponse userSignupResponse = userService.signup(request);
+        ApiResponse<UserSignupResponse> response = new ApiResponse<>(
+                "register_success",
+                userSignupResponse
+        );
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(response);
+    }
+
+    // POST /users/login - 로그인
+    @PostMapping("/users/login")
+    public ResponseEntity<ApiResponse<UserLoginResponse>> login(
+            @Valid @RequestBody UserLoginRequest request
+            ) {
+        UserLoginResponse userLoginResponse = userService.login(request);
+        ApiResponse<UserLoginResponse> response = new ApiResponse<>(
+                "login_success",
+                userLoginResponse
+        );
+        return ResponseEntity.ok(response);
+    }
+
+    // PATCH /users/{userId} - 회원정보 수정
+    @PatchMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<UserUpdateResponse>> updateUser(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserUpdateRequest request
+    ) {
+        UserUpdateResponse updateResponse = userService.updateUser(userId, request);
+
+        ApiResponse<UserUpdateResponse> response = new ApiResponse<>(
+                "user_update_success",
+                updateResponse
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    // PATCH /users/{userId}/password - 비밀번호 수정
+    @PatchMapping("/users/{userId}/password")
+    public ResponseEntity<ApiResponse<Void>> updatePassword(
+            @PathVariable Long userId,
+            @Valid @RequestBody UserPasswordUpdateRequest request
+    ) {
+        userService.updatePassword(userId, request);
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                "password_update_success",
+                null
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    // DELETE /users/{userId} - 회원탈퇴
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<ApiResponse<Void>> deleteUser(
+            @PathVariable Long userId
+    ) {
+        userService.deleteUser(userId);
+
+        ApiResponse<Void> response = new ApiResponse<>(
+                "user_delete_success",
+                null
+        );
+
+        return ResponseEntity.ok(response);
+    }
+}
+
+
