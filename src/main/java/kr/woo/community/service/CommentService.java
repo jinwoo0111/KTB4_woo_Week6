@@ -101,6 +101,11 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException());
 
+        // 삭제된 게시글 확인
+        if(post.isDeleted()) {
+            throw new PostNotFoundException();
+        }
+
         Comment comment = findById(commentId);
 
         if (!comment.getPost().getId().equals(postId)) {
